@@ -65,5 +65,30 @@ INSERT INTO companies VALUES(103, 'APPLE', 21000);
 SELECT * FROM companies;
 --//3.Örnek: "number_of_employees" değeri en düşük olan satırın tüm değerlerini çağırın.
 select * from companies where number_of_employees=(select min(number_of_employees) from companies);
+--//1. Örnek: companies tablosundan en yüksek ikinci number_of_employees değeri olan 
+--company ve number_of_employees değerlerini çağırın.
+--1.Yol:
+select company,number_of_employees from companies
+order by number_of_employees desc offset 1 limit 1;
 
+SELECT company, number_of_employees
+FROM companies
+ORDER BY number_of_employees DESC
+OFFSET 1 ROW
+FETCH NEXT 1 ROW ONLY;
+--2.Yol:Subquery
+select company,number_of_employees from companies
+where number_of_employees=(select max(number_of_employees) from companies
+where number_of_employees<(select max(number_of_employees) from companies));
+--3.YOl
+select max(number_of_employees) from companies where number_of_employees<>
+(select max (number_of_employees) from companies);
+--//1. Örnek: number_of_employees değeri ortalama çalışan sayısından 
+--az olan number_of_employees değerlerini
+--16000 olarak UPDATE edin.
+update companies
+set number_of_employees=16000
+where number_of_employees<(select avg(number_of_employees) from companies);
+drop table companies;
+select * from companies;
 
